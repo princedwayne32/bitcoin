@@ -7,7 +7,7 @@ export const useFetchCrypto = () => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    const fetchCoins = async () => {
+    const fetchData = async () => {
       setLoading(true);
       try {
         const res = await fetch(
@@ -21,11 +21,11 @@ export const useFetchCrypto = () => {
       } catch (err) {
         setError(err.message);
       } finally {
-        setTimeout(() => setLoading(false), 500);
+        setTimeout(() => setLoading(false), 600);
       }
     };
 
-    fetchCoins();
+    fetchData();
   }, [currency, setCoins]);
 
   return { loading, error };

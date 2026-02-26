@@ -8,37 +8,26 @@ import {
 } from "recharts";
 import { useCrypto } from "../context/CryptoContext";
 
-const MarketChart = () => {
+export default function MarketChart() {
   const { coins } = useCrypto();
 
-  const chartData = coins.slice(0, 10).map((coin) => ({
+  const data = coins.slice(0, 10).map((coin) => ({
     name: coin.symbol.toUpperCase(),
     price: coin.current_price,
   }));
 
   return (
-    <div className="bg-gray-900 p-6 rounded-2xl shadow-xl mt-8">
-      <h2 className="text-xl font-semibold mb-4">
-        Top 10 Price Overview
-      </h2>
+    <div className="h-96 bg-slate-900 mt-10 p-6 rounded-xl">
+      <h2 className="mb-4 text-xl text-cyan-400">Top 10 Market Overview</h2>
 
-      <div className="h-80">
-        <ResponsiveContainer>
-          <LineChart data={chartData}>
-            <XAxis dataKey="name" stroke="#888" />
-            <YAxis stroke="#888" />
-            <Tooltip />
-            <Line
-              type="monotone"
-              dataKey="price"
-              stroke="#00f5ff"
-              strokeWidth={2}
-            />
-          </LineChart>
-        </ResponsiveContainer>
-      </div>
+      <ResponsiveContainer>
+        <LineChart data={data}>
+          <XAxis dataKey="name" stroke="#94a3b8" />
+          <YAxis stroke="#94a3b8" />
+          <Tooltip />
+          <Line type="monotone" dataKey="price" stroke="#22d3ee" />
+        </LineChart>
+      </ResponsiveContainer>
     </div>
   );
-};
-
-export default MarketChart;
+}

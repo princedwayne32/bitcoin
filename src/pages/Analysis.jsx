@@ -1,10 +1,10 @@
-const Analysis = () => {
+export default function Analysis() {
   return (
-    <div className="p-10 text-white bg-gray-900 min-h-screen">
-      <h2 className="text-2xl font-bold">Market Analysis</h2>
-      <p className="mt-4 text-gray-400">Detailed trends and deep-dive data go here.</p>
+    <div className="p-10">
+      <h1 className="text-3xl text-cyan-400 mb-4">Market Analysis</h1>
+      <p>
+        Advanced analytics and deeper coin insights coming soon...
+      </p>
     </div>
   );
-};
-
-export default Analysis;
+}
