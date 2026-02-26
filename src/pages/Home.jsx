@@ -1,66 +1,82 @@
-import { useState } from 'react';
-import { useCrypto } from '../context/CryptoContext';
-import { useFetchCrypto } from '../hooks/useFetchCrypto';
-import MarketChart from '../components/MarketChart';
+import { useState, useRef, useEffect } from "react";
+import { useCrypto } from "../context/CryptoContext";
+import { useFetchCrypto } from "../hooks/useFetchCrypto";
+import MarketChart from "../components/MarketChart";
 
 const Home = () => {
-  const { coins } = useCrypto();
+  const { coins, currency, setCurrency } = useCrypto();
   const { loading, error } = useFetchCrypto();
-  const [searchTerm, setSearchTerm] = useState("");
+  const [search, setSearch] = useState("");
 
-  const filteredCoins = coins.filter(coin =>
-    coin.name.toLowerCase().includes(searchTerm.toLowerCase())
+  const inputRef = useRef(null);
+
+  useEffect(() => {
+    inputRef.current.focus();
+  }, []);
+
+  const filteredCoins = coins.filter((coin) =>
+    coin.name.toLowerCase().includes(search.toLowerCase())
   );
 
-  if (loading) return <div className="p-20 text-center animate-pulse text-cyan-400">CONNECTING TO NODES...</div>;
-  if (error) return <div className="p-20 text-center text-red-500">Error: {error}</div>;
-
   return (
-    <div className="p-6 max-w-7xl mx-auto space-y-8">
-      {/* Search Interaction */}
-      <div className="flex justify-between items-center bg-slate-900 p-6 rounded-2xl border border-slate-800 shadow-xl">
-        <div>
-          <h2 className="text-3xl font-bold bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">Market Pulse</h2>
-          <p className="text-slate-400 text-sm">Real-time e-currency tracking</p>
-        </div>
-        <input 
+    <div className="p-6 max-w-7xl mx-auto">
+      
+      {/* Controls */}
+      <div className="flex flex-col md:flex-row justify-between gap-4 mb-6">
+
+        <input
+          ref={inputRef}
           type="text"
-          placeholder="Search Currency..."
-          className="bg-slate-800 border border-slate-700 p-3 rounded-lg w-64 focus:ring-2 focus:ring-cyan-500 outline-none transition-all"
-          onChange={(e) => setSearchTerm(e.target.value)}
+          placeholder="Search coin..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          className="p-3 rounded-xl bg-gray-800 focus:outline-none"
         />
+
+        <select
+          value={currency}
+          onChange={(e) => setCurrency(e.target.value)}
+          className="p-3 rounded-xl bg-gray-800"
+        >
+          <option value="usd">USD</option>
+          <option value="eur">EUR</option>
+          <option value="php">PHP</option>
+        </select>
       </div>
 
-      {/* Visual Data Section */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        <div className="lg:col-span-2 bg-slate-900 p-6 rounded-2xl border border-slate-800">
-          <MarketChart />
-        </div>
-        
-        {/* Interactive List */}
-        <div className="bg-slate-900 p-6 rounded-2xl border border-slate-800 h-[450px] overflow-y-auto">
-          <h3 className="text-xl font-semibold mb-4 border-b border-slate-800 pb-2">Live Ranking</h3>
-          <div className="space-y-4">
-            {filteredCoins.map(coin => (
-              <div key={coin.id} className="flex justify-between items-center p-3 hover:bg-slate-800 rounded-xl transition-all group">
-                <div className="flex items-center gap-3">
-                  <img src={coin.image} alt={coin.name} className="w-8 h-8 rounded-full" />
-                  <div>
-                    <p className="font-bold uppercase">{coin.symbol}</p>
-                    <p className="text-xs text-slate-500">{coin.name}</p>
-                  </div>
-                </div>
-                <div className="text-right">
-                  <p className="font-mono text-cyan-400">${coin.current_price.toLocaleString()}</p>
-                  <p className={`text-xs ${coin.price_change_percentage_24h > 0 ? 'text-green-400' : 'text-red-400'}`}>
-                    {coin.price_change_percentage_24h?.toFixed(2)}%
-                  </p>
-                </div>
-              </div>
-            ))}
+      {loading && <p className="text-cyan-400">Scanning Blockchain...</p>}
+      {error && <p className="text-red-500">{error}</p>}
+
+      {/* Coin List */}
+      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {filteredCoins.map((coin) => (
+          <div
+            key={coin.id}
+            className="bg-gray-900 p-5 rounded-2xl hover:scale-105 transition"
+          >
+            <div className="flex items-center gap-3">
+              <img src={coin.image} alt="" className="w-8 h-8" />
+              <h3 className="font-semibold">{coin.name}</h3>
+            </div>
+
+            <p className="mt-3 text-lg">
+              {coin.current_price} {currency.toUpperCase()}
+            </p>
+
+            <p
+              className={`mt-2 ${
+                coin.price_change_percentage_24h > 0
+                  ? "text-green-400"
+                  : "text-red-400"
+              }`}
+            >
+              {coin.price_change_percentage_24h.toFixed(2)}%
+            </p>
           </div>
-        </div>
+        ))}
       </div>
+
+      <MarketChart />
     </div>
   );
 };

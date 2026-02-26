@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Crypto Pulse Pro</title>
+    <style>
+        /* This section centers everything and adds the colors */
+        body {
+            background-color: #0f172a;
+            color: white;
+            font-family: sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 0;
+            padding: 40px;
+        }
+        .container {
+            max-width: 1000px;
+            width: 100%;
+            text-align: center;
+        }
+        h1 { font-size: 3rem; margin-bottom: 10px; color: #38bdf8; }
+        .search-bar {
+            width: 100%;
+            max-width: 400px;
+            padding: 12px 20px;
+            border-radius: 25px;
+            border: 1px solid #334155;
+            background: #1e293b;
+            color: white;
+            margin-bottom: 50px;
+        }
+        /* The Centralized Grid */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            width: 100%;
+        }
+        /* Interactive Cards */
+        .card {
+            background: #1e293b;
+            padding: 30px;
+            border-radius: 20px;
+            border-bottom: 4px solid #38bdf8;
+            transition: transform 0.3s ease, background 0.3s ease;
+            cursor: pointer;
+        }
+        .card:hover {
+            transform: translateY(-10px);
+            background: #2d3748;
+        }
+        .btc { border-color: #f59e0b; }
+        .eth { border-color: #6366f1; }
+        
+        .price { font-size: 2rem; font-weight: bold; margin: 10px 0; }
+        .percent { color: #4ade80; font-weight: bold; }
+        .symbol { 
+            font-size: 3rem; 
+            margin-bottom: 15px;
+            display: block;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Market Pulse</h1>
+        <p style="color: #94a3b8;">Real-time e-currency tracking</p>
+        <input type="text" class="search-bar" placeholder="Search Currency...">
+
+        <div class="grid">
+            <div class="card btc">
+                <span class="symbol">₿</span>
+                <h3>Bitcoin</h3>
+                <div class="price">$68,508</div>
+                <div class="percent">+4.48%</div>
+            </div>
+
+            <div class="card eth">
+                <span class="symbol">Ξ</span>
+                <h3>Ethereum</h3>
+                <div class="price">$3,421</div>
+                <div class="percent">+2.15%</div>
+            </div>
+
+            <div class="card">
+                <span class="symbol">📈</span>
+                <h3>Market Cap</h3>
+                <div class="price">$2.5T</div>
+                <div class="percent">+1.2%</div>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
