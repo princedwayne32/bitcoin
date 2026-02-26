@@ -1,44 +1,65 @@
-import { useEffect, useRef } from 'react';
+import { useState } from 'react';
+import { useCrypto } from '../context/CryptoContext';
 import { useFetchCrypto } from '../hooks/useFetchCrypto';
 import MarketChart from '../components/MarketChart';
 
 const Home = () => {
-  // Use the hook to trigger the API call [cite: 676]
+  const { coins } = useCrypto();
   const { loading, error } = useFetchCrypto();
-  const searchInputRef = useRef(null);
+  const [searchTerm, setSearchTerm] = useState("");
 
-  useEffect(() => {
-    // Focus the search bar immediately (the "Laser Pointer") [cite: 672]
-    if (searchInputRef.current) searchInputRef.current.focus();
-  }, []);
-
-  if (loading) return (
-    <div className="flex items-center justify-center h-64 text-cyan-400 animate-pulse font-bold">
-      SCANNING BLOCKCHAIN...
-    </div>
+  const filteredCoins = coins.filter(coin =>
+    coin.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  if (error) return (
-    <div className="p-10 text-red-400 bg-red-900/20 rounded-lg border border-red-500 m-5">
-      ⚠️ Error: {error}
-    </div>
-  );
+  if (loading) return <div className="p-20 text-center animate-pulse text-cyan-400">CONNECTING TO NODES...</div>;
+  if (error) return <div className="p-20 text-center text-red-500">Error: {error}</div>;
 
   return (
-    <div className="p-8 max-w-6xl mx-auto">
-      <div className="mb-8">
-        <label className="text-slate-400 text-sm mb-2 block uppercase tracking-widest">Search Market</label>
+    <div className="p-6 max-w-7xl mx-auto space-y-8">
+      {/* Search Interaction */}
+      <div className="flex justify-between items-center bg-slate-900 p-6 rounded-2xl border border-slate-800 shadow-xl">
+        <div>
+          <h2 className="text-3xl font-bold bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">Market Pulse</h2>
+          <p className="text-slate-400 text-sm">Real-time e-currency tracking</p>
+        </div>
         <input 
-          ref={searchInputRef}
-          type="text" 
-          placeholder="Search Bitcoin, Ethereum..." 
-          className="w-full p-4 rounded-xl bg-slate-900 text-white border border-slate-700 focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 outline-none transition-all shadow-inner"
+          type="text"
+          placeholder="Search Currency..."
+          className="bg-slate-800 border border-slate-700 p-3 rounded-lg w-64 focus:ring-2 focus:ring-cyan-500 outline-none transition-all"
+          onChange={(e) => setSearchTerm(e.target.value)}
         />
       </div>
-      
-      {/* The chart component that consumes Global State [cite: 660, 661] */}
-      <div className="bg-slate-900 p-6 rounded-2xl border border-slate-800 shadow-xl">
-        <MarketChart />
+
+      {/* Visual Data Section */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="lg:col-span-2 bg-slate-900 p-6 rounded-2xl border border-slate-800">
+          <MarketChart />
+        </div>
+        
+        {/* Interactive List */}
+        <div className="bg-slate-900 p-6 rounded-2xl border border-slate-800 h-[450px] overflow-y-auto">
+          <h3 className="text-xl font-semibold mb-4 border-b border-slate-800 pb-2">Live Ranking</h3>
+          <div className="space-y-4">
+            {filteredCoins.map(coin => (
+              <div key={coin.id} className="flex justify-between items-center p-3 hover:bg-slate-800 rounded-xl transition-all group">
+                <div className="flex items-center gap-3">
+                  <img src={coin.image} alt={coin.name} className="w-8 h-8 rounded-full" />
+                  <div>
+                    <p className="font-bold uppercase">{coin.symbol}</p>
+                    <p className="text-xs text-slate-500">{coin.name}</p>
+                  </div>
+                </div>
+                <div className="text-right">
+                  <p className="font-mono text-cyan-400">${coin.current_price.toLocaleString()}</p>
+                  <p className={`text-xs ${coin.price_change_percentage_24h > 0 ? 'text-green-400' : 'text-red-400'}`}>
+                    {coin.price_change_percentage_24h?.toFixed(2)}%
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
     </div>
   );

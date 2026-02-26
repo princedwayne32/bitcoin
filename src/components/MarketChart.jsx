@@ -1,24 +1,35 @@
-import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from 'recharts';
 import { useCrypto } from '../context/CryptoContext';
 
 const MarketChart = () => {
   const { coins } = useCrypto();
-  const chartData = coins.map(coin => ({
+
+  // Mapping live data for the chart
+  const data = coins.slice(0, 6).map(coin => ({
     name: coin.symbol.toUpperCase(),
-    price: coin.current_price
+    price: coin.current_price,
   }));
 
   return (
-    <div className="h-80 w-full p-4 bg-gray-800 rounded-xl mt-6">
-      <h2 className="text-white mb-4">Price Comparison (USD)</h2>
-      <ResponsiveContainer>
-        <BarChart data={chartData}>
-          <XAxis dataKey="name" stroke="#94a3b8" />
-          <YAxis stroke="#94a3b8" />
-          <Tooltip contentStyle={{backgroundColor: '#1e293b', border: 'none'}} />
-          <Bar dataKey="price" fill="#22d3ee" radius={[4, 4, 0, 0]} />
-        </BarChart>
-      </ResponsiveContainer>
+    <div className="h-full w-full">
+      <h2 className="text-lg font-bold mb-4 text-slate-300 uppercase tracking-widest">Price Overview (USD)</h2>
+      <div className="h-80">
+        <ResponsiveContainer width="100%" height="100%">
+          <BarChart data={data}>
+            <XAxis dataKey="name" stroke="#64748b" fontSize={12} tickLine={false} axisLine={false} />
+            <YAxis hide />
+            <Tooltip 
+              cursor={{fill: '#1e293b'}}
+              contentStyle={{ backgroundColor: '#0f172a', border: '1px solid #334155', borderRadius: '8px' }}
+            />
+            <Bar dataKey="price" radius={[6, 6, 0, 0]}>
+              {data.map((entry, index) => (
+                <Cell key={`cell-${index}`} fill={index === 0 ? '#22d3ee' : '#3b82f6'} />
+              ))}
+            </Bar>
+          </BarChart>
+        </ResponsiveContainer>
+      </div>
     </div>
   );
 };
